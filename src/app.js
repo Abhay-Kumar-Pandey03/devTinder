@@ -12,11 +12,11 @@ app.get("/user", (req,res) => {
     // res.send({firstname: "John", lastname: "Doe"});
 });
 
-// app.get("/user/:userID/:name/:password", (req,res) => {
-//     console.log(req.params);
-//     res.send("Get user API called with dynamic route");
-//     // res.send({firstname: "John", lastname: "Doe"});
-// });
+app.get("/user/:userID/:name/:password", (req,res) => {
+    console.log(req.params);
+    res.send("Get user API called with dynamic route");
+    // res.send({firstname: "John", lastname: "Doe"});
+});
 
 app.get("/user", (req,res) => {
     console.log(res.params);
@@ -28,7 +28,6 @@ app.post("/user", (req,res) => {
     res.send("Post user API called");
     // res.send({firstname: "John", lastname: "Doe"});
 });
-
 
 app.put("/user", (req,res) => {
     res.send("Put user API called");
@@ -53,9 +52,6 @@ app.use("/test",(req,res) => {
 // app.use("/",(req,res) => {
 //     res.send( "Hello from dashboard"); // Request handler
 // });
-
-
-
 
 
 app.listen(3000, () =>{
