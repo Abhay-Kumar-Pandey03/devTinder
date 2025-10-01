@@ -2,25 +2,26 @@ const express = require('express');
 
 const app = express();
 
-const { adminAuth, userAuth } = require("./midlewares/auth.js");
-
-//Handle Auth Middleware for GET requests
-
-app.use("/admin", adminAuth);
-
-app.get("/admin/data", (req, res) => {
-    res.send("Admin data accessed successfully");
+app.use("/", (err, req, res, next) => {
+    if(err)
+    res.status(500).send("Error message : " + err.message);
 });
 
-app.get("/user/data", userAuth, (req, res) => {
-    res.send("User data sent successfully");
+app.use("/data", ( req, res) => {
+    try{
+        throw new Error("dsidnc");
+        res.send("Data sent successfully");
+    }
+    catch(err){
+        res.status(500).send({message: err.message});
+    }
+
 });
 
-app.post("/user/login", (req, res) => {
-    res.send("User logged in successfully");
+app.use("/", (err, req, res, next) => {
+    if(err)
+    res.status(500).send("Error message : " + err.message);
 });
-
-
 
 app.listen(3000, () =>{
     console.log("Server is successfully running on port 3000");
