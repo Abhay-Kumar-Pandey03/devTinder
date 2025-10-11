@@ -21,7 +21,57 @@ app.post("/signup", async (req, res) => {
 
 });
 
+//Get a user by email
+app.get("/feed", async (req,res) => {
+  const userEmail = req.body.emailId;
 
+  try{
+    const users = await User.find({emailId: userEmail});
+    if(users.length === 0){
+      res.status(404).send("User not found");
+      
+    }
+    else{
+      res.send(users);
+    }
+  }
+  catch(err){
+    res.status(400).send("❌ Something went wrong");
+  }
+});
+
+
+//Get all users
+app.get("/feed", async (req,res) => {
+  try{
+
+    const users = await User.find({});
+    res.send(users);
+  }
+  catch(err){
+    res.status(400).send("❌ Something went wrong");
+  }
+});
+
+
+
+//Using findOne() method to get a single user - returns the oldest document that matches the query criteria.
+app.get("/feed", async (req,res) =>{
+  const userEmail = req.body.emailId;
+  try{
+    const users = await User.findOne({emailId: userEmail});
+    if(!users){
+      res.status(404).send("User not found");
+    }
+    else{
+      res.send(users);
+
+    }
+  }
+  catch(err){
+    res.status(400).send("something went wrong");
+  }
+});
 
 
 connectDB()
