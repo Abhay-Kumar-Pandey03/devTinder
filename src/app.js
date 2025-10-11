@@ -3,9 +3,10 @@ const express = require('express');
 const app = express();
 const connectDB = require("./config/database");
 const User = require("./models/user");
+
 app.use(express.json());
 
-
+//Sign up a user
 app.post("/signup", async (req, res) => {
     
   //Creating an instance of User model
@@ -53,8 +54,6 @@ app.get("/feed", async (req,res) => {
   }
 });
 
-
-
 //Using findOne() method to get a single user - returns the oldest document that matches the query criteria.
 app.get("/feed", async (req,res) =>{
   const userEmail = req.body.emailId;
@@ -70,6 +69,36 @@ app.get("/feed", async (req,res) =>{
   }
   catch(err){
     res.status(400).send("something went wrong");
+  }
+});
+
+//Deleting a user
+app.delete("/user", async (req, res) => {
+  
+  const userId = req.body.userId;
+  
+  try{
+    const users = await User.findByIdAndDelete(userId);
+    // const users = await User.findByIdAndDelete({_id: userId});
+    res.status(200).send("User deleted successfully");
+  }
+  catch(err){
+    res.status(400).send("Error in deleting the user");
+  }
+
+});
+
+//Updating a user
+app.patch("/user", async (req,res) => {
+  const userId = req.body.userId;
+
+  try{
+    const data = req.body;
+    const user = await User.findByIdAndUpdate(userId, data);
+    res.status(200).send("User updated successfully");
+  }
+  catch(err){
+    res.status(400).send("Error in updating the user");
   }
 });
 
