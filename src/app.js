@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const connectDB = require("./config/database");
 const User = require("./models/user");
+const validator = require('validator');
 
 app.use(express.json());
 
@@ -129,15 +130,28 @@ app.patch("/user/:userId", validateAgeLimits, async (req,res) => {
   const emailId = req.body.emailId;
   const userId = req.params?.userId;
   const data = req.body;
+  
 
   try{
-    const Allowed_updates = ["firstName", "lastName", "age", "photoUrl", "about", "skills"];
+    const Allowed_updates = ["firstName", "lastName","password", "age", "photoUrl", "about", "skills"];
     const isAllowed = Object.keys(data).every((k) =>
     Allowed_updates.includes(k)
     );
 
+
     if(!isAllowed){
       throw new Error("Update not allowed");
+    }
+    
+  if (typeof data?.photoUrl === "string") {
+  const trimmedUrl = data.photoUrl.trim();
+
+  if (trimmedUrl === "") {
+    throw new Error("Photo URL cannot be empty");
+  }
+
+    if (!validator.isURL(trimmedUrl)) {
+      throw new Error("Invalid photo URL");
     }
 
     if(data?.skills.length > 10){
@@ -162,11 +176,10 @@ app.patch("/user/:userId", validateAgeLimits, async (req,res) => {
 
     if(data?.lastName && data.lastName.length > 30){
       throw new Error("Last name cannot exceed 30 characters");
-    } 
-
-    if(data?.photoUrl && data.photoUrl.trim() === ""){
-      throw new Error("Photo URL cannot be empty");
     }
+
+}
+
 
     const user = await User.findByIdAndUpdate(emailId, data);
     res.status(200).send("User updated successfully");
