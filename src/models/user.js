@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
         required: true,
+        // index : true,
         trim: true,
         maxLength: 30,
     },
@@ -53,11 +54,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         minLength: 4,
         maxLength: 6,
-        validate(value) {
-            if(!["male", "female", "other"].includes(value.toLowerCase())){
-                throw new Error("Entered wrong gender!!")
-            }
-        }
+        enum: {
+            values: ["male", "female", "other"],
+            message: "${VALUE} is not a gender type"
+        },
+        // validate(value) {
+        //     if(!["male", "female", "other"].includes(value.toLowerCase())){
+        //         throw new Error("Entered wrong gender!!")
+        //     }
+        // }
     },
 
     photoUrl: {
@@ -89,6 +94,8 @@ userSchema.methods.getJWT = async function () {
 
     return token;
 };
+
+userSchema.index({firstName: 1, lastName: 1});
 
 userSchema.methods.validatePassword = async function(passwordInputByUser){
     const user = this;
