@@ -38,19 +38,20 @@ const validateSignUpData = (req) => {
         if (trimmedUrl === "") {
             throw new Error("Photo URL cannot be empty");
         }
-    }
-    
-    if (!validator.isURL(trimmedUrl)) {
-        throw new Error("Invalid photo URL");
+        
+        if (!validator.isURL(trimmedUrl)) {
+            throw new Error("Invalid photo URL");
+        }
     }
     
     if (data?.about && data.about.length > 500) {
         throw new Error("About section cannot exceed 500 characters");
     }
     
-    if (data?.skills.length > 10) {
+    if (data?.skills && data.skills.length > 10) {
         throw new Error("Skills cannot be more than 10");
     }
+
 }
 
 const validateEditProfileData = (req) => {
