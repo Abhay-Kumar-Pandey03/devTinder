@@ -39,7 +39,7 @@ authRouter.post("/login", async(req, res) => {
     const user = await User.findOne({ emailId : emailId})
 
     if(!user){
-        throw new Error("Wrong credentials");
+        throw new Error("Invalid Credentials");
     }
 
     const isValidPassword = await user.validatePassword(password);
