@@ -2,30 +2,33 @@ const express = require("express");
 const profileRouter = express.Router();
 const bcrypt = require("bcrypt");
 const validator = require("validator");
-const {userAuth} = require("../middlewares/auth");
-const {validateEditProfileData} = require("../utils/validation");
+const { userAuth } = require("../middlewares/auth");
+const { validateEditProfileData, validateSignUpData } = require("../utils/validation");
 
 //Get profile
-profileRouter.get("/profile/view", userAuth, async(req, res) => {
-    try{
-    const user = req.user;
-    if(!user){
-    throw new Error("User not found");
+profileRouter.get("/profile/view", userAuth, async (req, res) => {
+    try {
+        const user = req.user;
+        if (!user) {
+            throw new Error("User not found");
+        }
+        res.send(user);
     }
-    res.send(user);
-    }
-    catch(err) {
-    res.status(400).send("Error : " + err.message);
+    catch (err) {
+        res.status(400).send("Error : " + err.message);
     }
 });
 
 //Edit profile
-profileRouter.patch("/profile/edit", userAuth, async(req, res) => {
+profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
 
-    try{
-        if(!validateEditProfileData(req)){
-        throw new Error("Invalid Edit Request!!");
+    try {
+        const error = validateEditProfileData(req);
+
+        if (error) {
+            return res.status(400).json({ message: error });
         }
+
 
         const loggedInUser = req.user;
         Object.keys(req.body).forEach((key) => (
@@ -35,36 +38,37 @@ profileRouter.patch("/profile/edit", userAuth, async(req, res) => {
         await loggedInUser.save();
 
         // res.send("Profile updated successfully");
-        res.json({message: `${loggedInUser.firstName}, your profile updated successfully.`,
+        res.json({
+            message: `${loggedInUser.firstName}, your profile updated successfully.`,
             data: loggedInUser,
         });
     }
-    catch(err) {
-        res.status(400).send("ERROR : "+ err.message);
+    catch (err) {
+        res.status(400).send("ERROR : " + err.message);
     }
 
 });
 
 // Forgot Password
-profileRouter.patch("/profile/password", userAuth, async(req, res) => {
-    
-    try{
+profileRouter.patch("/profile/password", userAuth, async (req, res) => {
+
+    try {
 
         const newPassword = req.body.password;
-        
-        if(!validator.isStrongPassword(newPassword)){
+
+        if (!validator.isStrongPassword(newPassword)) {
             throw new Error("Enter a strong password");
         }
-        
+
         const hashChangePassword = await bcrypt.hash(newPassword, 10);
         const loggedInUser = req.user;
 
         loggedInUser.password = hashChangePassword;
         await loggedInUser.save();
-        
+
         res.send("Password changed successfully");
     }
-    catch(err) {
+    catch (err) {
         res.status(400).send("Error : " + err.message);
     }
 });

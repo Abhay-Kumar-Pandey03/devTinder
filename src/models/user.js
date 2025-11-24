@@ -68,7 +68,7 @@ const userSchema = new mongoose.Schema({
     photoUrl: {
         type: String,
         trim: true,
-        default: "https://www.shutterstock.com/image-vector/default-avatar-social-media-display-picture-2632690107",
+        default: "https://www.shutterstock.com/shutterstock/photos/2632690107/display_1500/stock-vector-default-avatar-social-media-display-picture-icon-isolated-vector-illustration-2632690107.jpg",
         validate(value){
             if(!validator.isURL(value)){
                 throw new Error("Invalid URL for photo");
