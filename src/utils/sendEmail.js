@@ -1,0 +1,51 @@
+const { SendEmailCommand } = require("@aws-sdk/client-ses");
+const { sesClient } = require("./sesClient.js");
+
+const createSendEmailCommand = (toAddress, fromAddress) => {
+    return new SendEmailCommand({
+        Destination: {
+            CcAddresses: [],
+            ToAddresses: [
+                toAddress,
+            ],
+        },
+        Message: {
+            Body: {
+                Html: {
+                    Charset: "UTF-8",
+                    Data: "<h1>This is the body of email</h1>",
+                },
+                Text: {
+                    Charset: "UTF-8",
+                    Data: "This is the text body of email",
+                },
+            },
+            Subject: {
+                Charset: "UTF-8",
+                Data: "This is the subject of the email",
+            },
+        },
+        Source: fromAddress,
+        ReplyToAddresses: [
+        ],
+    });
+};
+
+const run = async () => {
+    const sendEmailCommand = createSendEmailCommand(
+        "abhaysiddhu1000@gmail.com",
+        "abhaypandey7067@gmail.com",
+    );
+
+    try {
+        return await sesClient.send(sendEmailCommand);
+    } catch (error) {
+        console.error("SES ERROR:", error.name, error.message, error.$metadata);
+
+        return { error, $metadata: error.$metadata };
+ // so emailRes is logged in requests.js
+    }
+};
+
+// snippet-end:[ses.JavaScript.email.sendEmailV3]
+module.exports = { run };
