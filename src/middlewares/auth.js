@@ -27,7 +27,7 @@ const User = require("../models/user");
 const userAuth = async(req, res, next) =>{
     try{
 
-        console.log("Inside auth middleware");
+//        console.log("Inside auth middleware");
 
     //Read the token from req cookies
     const cookies = req.cookies;

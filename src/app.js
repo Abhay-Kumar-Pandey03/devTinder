@@ -21,10 +21,10 @@ const profileRouter = require("./routes/profile");
 const requestsRouter = require("./routes/requests");
 const userRouter = require("./routes/user");
 
-app.use("/", authRouter);
-app.use("/", profileRouter);
-app.use("/", requestsRouter);
-app.use("/", userRouter);
+app.use("/api", authRouter);
+app.use("/api", profileRouter);
+app.use("/api", requestsRouter);
+app.use("/api", userRouter);
 
 connectDB()
   .then(() => {
@@ -37,3 +37,5 @@ connectDB()
   .catch((err) => {
     console.log("Database cannot be connected !!");
   });
+
+  
